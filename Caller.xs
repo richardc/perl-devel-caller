@@ -1,3 +1,4 @@
+/* C-Mode */
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
@@ -94,6 +95,9 @@ I32 want_names;
                 break; \
             } \
             if (skip_next) break; 
+#if WORK_DAMN_YOU
+	    printf("PAD skip_next %d\n", skip_next);
+#endif
             VARIABLE_PREAMBLE;
 
             if (want_names) {
@@ -116,6 +120,9 @@ I32 want_names;
         case OP_RV2AV:
         case OP_RV2HV:
         case OP_RV2GV:
+#if WORK_DAMN_YOU
+	    printf("GV skip_next %d\n", skip_next);
+#endif
             VARIABLE_PREAMBLE;
 
             if      (op->op_type == OP_GVSV) 
@@ -128,6 +135,10 @@ I32 want_names;
                 XPUSHs(glob_out('*', (GVOP*) prev_op, want_names));
             break;
         case OP_CONST:
+#if WORK_DAMN_YOU
+	    printf("CONST skip_next %d\n", skip_next);
+#endif
+
             VARIABLE_PREAMBLE;
             XPUSHs(&PL_sv_undef);
             break;

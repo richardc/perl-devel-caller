@@ -1,6 +1,6 @@
 #!perl
 use strict;
-use Test::More tests => 70;
+use Test::More tests => 73;
 
 BEGIN { use_ok( 'Devel::Caller', qw( caller_cv caller_args caller_vars called_with called_as_method ) ) }
 
@@ -183,3 +183,15 @@ sub args {
 }
 
 args('foo', 'bar');
+
+# rt.cpan.org 2878
+my $coy = rand 6;
+print "# cunning coy tests\n";
+real( $coy, $coy );
+print "# concat\n";
+
+print "# print ", real( $coy, $coy ), "\n";
+
+sub real {
+    is_deeply( [ called_with(0,1) ], [qw( $coy $coy )], 'real( $coy, $coy )' );
+}
