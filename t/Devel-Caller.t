@@ -1,8 +1,8 @@
 #!perl
 use strict;
-use Test::More tests => 69;
+use Test::More tests => 70;
 
-BEGIN { use_ok( 'Devel::Caller', qw( caller_cv called_with called_as_method ) ) }
+BEGIN { use_ok( 'Devel::Caller', qw( caller_cv caller_args caller_vars called_with called_as_method ) ) }
 
 package CV;
 use Test::More;
@@ -108,7 +108,7 @@ $what = 'lexical prexist';
 
 use vars qw( $quux @quux %quux );
 sub called {
-    my @called = called_with(0);
+    my @called = caller_vars(0);
     is( scalar @called, 3, "right count");
     is( $called[0], \$quux, "with \$quux" );
     is( $called[1], \@quux, "with \@quux" );
@@ -177,3 +177,9 @@ main->maybe_method();
 my $name = 'maybe_method';
 main->$name();
 
+
+sub args {
+    is_deeply( \@_, [ caller_args(0) ] );
+}
+
+args('foo', 'bar');

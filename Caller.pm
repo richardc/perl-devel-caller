@@ -7,12 +7,20 @@ use PadWalker ();
 require 5.005003;
 
 @ISA = qw(Exporter DynaLoader);
-@EXPORT_OK = qw( caller_cv called_with called_as_method );
+@EXPORT_OK = qw( caller_cv caller_args caller_vars called_with called_as_method );
 
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 bootstrap Devel::Caller $VERSION;
 
+sub caller_args {
+    my $level = shift;
+    package DB;
+    () = caller( $level + 1 );
+    return @DB::args
+}
+
+*caller_vars = called_with;
 sub called_with {
     my $level = shift;
     my $names = shift || 0;
@@ -67,6 +75,11 @@ Devel::Caller - meatier versions of C<caller>
 C<caller_cv> gives you the coderef of the subroutine being invoked at
 the call frame indicated by the value of $level
 
+=item caller_args($level)
+
+Returns the arguments passed into the caller at level $level
+
+=item caller_vars( $level, $names )
 =item called_with($level, $names)
 
 C<called_with> returns a list of references to the original arguments
@@ -103,6 +116,12 @@ into a constant assignment at compile time as in newer perls.
 
 =over
 
+=item 0.08 Released 2003-03-28
+
+Added caller_vars as a synonym for called_with
+
+Added caller_args
+
 =item 0.06 Released 2002-11-21
 
 Fix to called_as_method from Rafael Garcia-Suarez to handle
@@ -138,8 +157,8 @@ PadWalker by Robin Houston
 
 =head1 COPYRIGHT
 
-Copyright (c) 2002, Richard Clamp. All Rights Reserved.  This module
-is free software. It may be used, redistributed and/or modified under
-the same terms as Perl itself.
+Copyright (c) 2002, 2003, Richard Clamp. All Rights Reserved.  This
+module is free software. It may be used, redistributed and/or modified
+under the same terms as Perl itself.
 
 =cut
