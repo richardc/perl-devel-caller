@@ -1,8 +1,8 @@
 #!perl
 use strict;
-use Test::More tests => 66;
+use Test::More tests => 68;
 
-BEGIN { use_ok( 'Devel::Caller', qw( caller_cv called_with ) ) }
+BEGIN { use_ok( 'Devel::Caller', qw( caller_cv called_with called_as_method ) ) }
 
 package CV;
 use Test::More;
@@ -164,3 +164,14 @@ $what = 'package';
     @expect = qw( %T::quux %T::bar );  called_assign(%quux = %foo, %bar);
     @expect = qw( %T::flange );        called_assign(%flange = (%foo, %bar));
 }
+
+package main;
+# were we called as a method or a sub
+my $called;
+sub maybe_method {
+    is( called_as_method(), $called, "called_as_method" );
+}
+maybe_method();
+$called = 1;
+main->maybe_method();
+

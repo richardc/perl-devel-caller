@@ -58,6 +58,7 @@ I32 want_names;
     char sigil;
 
   PPCODE:
+{
     /* hacky hacky hacky.  under ithreads Gvs are stored in PL_curpad
      * which moves about some.  Here we temporarily pretend we were
      * back in olden times, which is where we're looking */
@@ -68,7 +69,6 @@ I32 want_names;
     printf("cx %x cv %x pad %x %x\n", cx, cv, padn, padv);
 #endif
     /* a lot of this blind derefs, hope it goes ok */
-{
     /* (hackily) deparse the subroutine invocation */
 
     op = cx->blk_oldcop->op_next;
@@ -155,3 +155,21 @@ SV* context;
   OUTPUT:
     RETVAL
 
+
+void
+_called_as_method (SV* context)
+PPCODE:
+{
+    PERL_CONTEXT* cx = (PERL_CONTEXT*) SvIV(context);
+    OP* op, *prev_op;
+
+    op = cx->blk_oldcop->op_next;
+    if (op->op_type != OP_PUSHMARK) 
+	croak("was expecting a pushmark, not a '%s'",  OP_NAME(op));
+    while ((prev_op = op) && (op = op->op_next) && (op->op_type != OP_ENTERSUB)) {
+	if (op->op_type == OP_METHOD_NAMED) {
+	    XPUSHs(sv_2mortal(newSViv(1)));
+	    return;
+	}
+    }
+}

@@ -7,9 +7,9 @@ use PadWalker ();
 require 5.005003;
 
 @ISA = qw(Exporter DynaLoader);
-@EXPORT_OK = qw( caller_cv called_with );
+@EXPORT_OK = qw( caller_cv called_with called_as_method );
 
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 bootstrap Devel::Caller $VERSION;
 
@@ -29,6 +29,14 @@ sub caller_cv {
     my $cx = PadWalker::_upcontext($level + 1);
     return unless $cx;
     return _context_cv($cx);
+}
+
+
+sub called_as_method {
+    my $level = shift || 0;
+    my $cx = PadWalker::_upcontext($level + 1);
+    return unless $cx;
+    _called_as_method($cx);
 }
 
 1;
@@ -66,6 +74,11 @@ to the subroutine at $level.  if $names is true, the names of the
 variables will be returned instead
 
 constants are returned as C<undef> in both cases
+
+=item called_as_method($level)
+
+C<called_as_method> returns true if the subroutine at $level was
+called as a method.
 
 =head1 BUGS
 
