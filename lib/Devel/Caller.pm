@@ -9,7 +9,7 @@ require 5.005003;
 @ISA = qw(Exporter DynaLoader);
 @EXPORT_OK = qw( caller_cv caller_args caller_vars called_with called_as_method );
 
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 bootstrap Devel::Caller $VERSION;
 
@@ -61,10 +61,8 @@ Devel::Caller - meatier versions of C<caller>
  $foo->();  # prints huzzah
 
  use Devel::Caller qw(called_with);
- my @foo;
- sub foo { print "huzzah" if \@foo == (called_with 0)[0] }
- foo(@foo); # should print huzzah
-
+ sub foo { print called_with(0,1); }
+ foo( my @foo ); # should print '@foo'
 
 =head1 DESCRIPTION
 
@@ -99,52 +97,30 @@ All of these routines are susceptible to the same limitations as
 C<caller> as described in L<perlfunc/caller>
 
 The deparsing of the optree perfomed by called_with is fairly simple-minded
-and so a bit flaky.  It's know to currently chokes structures such as this:
+and so a bit flaky.  It's know to currently be inaccurate in this case:
 
-   foo( [ 'constant' ] );
+ print foo( $bar ), baz( $quux );
+
+When returning answers about the invocation of baz it will mistakenly
+return the answers for the invocation of foo so you'll see '$bar'
+where you expected '$quux'.
+
+A workaround is to rewrite the code like so:
+
+ print foo( $bar );
+ print bar( $baz );
+
+A more correct fix is left as a TODO item.
+
 
 Also, on perl 5.005_03
 
-   use vars qw/@bar/;
-   foo( @bar = qw( some value ) );
+ use vars qw/@bar/;
+ foo( @bar = qw( some value ) );
 
-is broken as it generates real split ops rather than optimising it
-into a constant assignment at compile time as in newer perls.
-
-
-=head1 HISTORY
-
-=over
-
-=item 0.08 Released 2003-03-28
-
-Added caller_vars as a synonym for called_with
-
-Added caller_args
-
-=item 0.06 Released 2002-11-21
-
-Fix to called_as_method from Rafael Garcia-Suarez to handle
-$foo->$method() calls.
-
-=item 0.06 Released 2002-11-20
-
-Added called_as_method routine
-
-=item 0.05 Released 2002-07-25
-
-Fix a segfault under ithreads.  Cleaned up some development cruft that
-leaked out while rushing.
-
-=item 0.04 Released 2002-07-01
-
-Decode glob params too.
-
-=item 0.03 Released 2002-04-02
-
-Refactored to share the upcontext code from PadWalker 0.08
-
-=back
+will not deparse correctly as it generates real split ops rather than
+optimising it into a constant assignment at compile time as in later
+releases of perl.
 
 =head1 SEE ALSO
 
@@ -152,7 +128,7 @@ L<perlfunc/caller>, L<PadWalker>, L<Devel::Peek>
 
 =head1 AUTHOR
 
-Richard Clamp E<lt>richardc@unixbeard.netE<gt> with close reference to
+Richard Clamp <richardc@unixbeard.net> with close reference to
 PadWalker by Robin Houston
 
 =head1 COPYRIGHT

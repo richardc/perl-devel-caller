@@ -1,0 +1,28 @@
+0.09 Sunday 5th October, 2003
+	Split Changes out from HISTORY pod section.
+	Port to Module::Build
+	We can now determine constant values in called_with.
+	Partial fixes for http://rt.cpan.org/NoAuth/Bug.html?id=2878
+
+0.08 2003-03-28
+	Added caller_vars as a synonym for called_with
+	Added caller_args
+
+0.07 2002-11-21
+	Fix to called_as_method from Rafael Garcia-Suarez to handle
+	$foo->$method() calls.
+
+0.06 2002-11-20
+	Added called_as_method routine
+
+0.05 2002-07-25
+	Fix a segfault under ithreads.  
+	Cleaned up some development cruft that leaked out while
+	rushing.
+
+0.04 2002-07-01
+	Decode glob params too.
+
+0.03 2002-04-02
+	Refactored to share the upcontext code from PadWalker 0.08
+
