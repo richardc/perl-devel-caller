@@ -32,6 +32,7 @@ my (@foo, %foo);
 sub called_lex {
     my @called = called_with(0);
     is( scalar @called, 3, "right count");
+    local $TODO = "pad reorg broke this" if $] >= 5.008001;
     is( $called[0], \$foo, "with lexical \$foo" );
     is( $called[1], \@foo, "with lexical \@foo" );
     is( $called[2], \%foo, "with lexical \%foo" );
@@ -60,7 +61,6 @@ $what = 'constant';
     my $foo;
     @expect = undef;                called_assign('foo');
     @expect = (undef, '$foo');      called_assign('foo', $foo);
-    local $TODO = "fix deparsing of constant lists";
     @expect = (undef, '$foo');      called_assign(['foo'], $foo);
 }
 

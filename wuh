@@ -6,20 +6,22 @@ use Devel::Caller qw( called_with caller_vars );
 use Data::Dumper;
 
 my $coy = rand 6;
-real( $coy, $coy );
+#real( $coy, $coy );
 
 my ($foo, @foo, %foo);
-real( $foo, @foo, %foo );
+#real( $foo, @foo, %foo );
 
-real( my $foo = $coy );
-warn "huh?\n", real( $coy, $coy );
+warn "wuh\n", real( $coy ), real( $foo );
+
+#real( my $foo = $coy );
+#warn "huh?\n", real( $coy, $coy );
 #warn "----";
 #warn "confusing\n", print $/, real( $coy, $coy );
 
 #print "$/ even more confusing $/", real( $coy, $coy );
 
 sub real {
-    my @called = called_with(0);
+    my @called = called_with(0,1);
     print Dumper( \@called );
     return 1;
 }
