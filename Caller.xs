@@ -7,6 +7,7 @@
 #define aTHX_
 #define OPGV(o) o->op_gv
 #define PL_op_name   op_name
+#define OP_METHOD_NAMED OP_METHOD
 #else        /* newer than 5.005_03 */
 #define GVOP OP
 #define OPGV cGVOPx_gv
@@ -157,7 +158,8 @@ SV* context;
 
 
 void
-_called_as_method (SV* context)
+_called_as_method (context)
+SV* context;
 PPCODE:
 {
     PERL_CONTEXT* cx = (PERL_CONTEXT*) SvIV(context);
