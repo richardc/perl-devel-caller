@@ -1,6 +1,8 @@
 README
 MANIFEST
+Changes
+Build.PL
 Makefile.PL
-Caller.pm
-Caller.xs
+lib/Devel/Caller.pm
+lib/Devel/Caller.xs
 t/Devel-Caller.t

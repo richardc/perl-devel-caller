@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use blib;
 use Devel::Caller qw( called_with caller_vars );
 use Data::Dumper;
 

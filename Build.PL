@@ -8,7 +8,7 @@ Module::Build->new(
         'Test::More' => 0,
     },
     requires => {
-        'PadWalker' => '0.8',
+        'PadWalker' => '0.08',
     },
     create_makefile_pl => 'passthrough',
    )
