@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Devel::Caller qw( called_with caller_vars );
+use Data::Dumper;
+
+my $coy = rand 6;
+warn "huh?\n", real( $coy, $coy );
+warn "----";
+warn "confusing\n", print $/, real( $coy, $coy );
+
+print "$/ even more confusing $/", real( $coy, $coy );
+
+sub real {
+    my @called = called_with(0,1);
+    return Dumper( \@called );
+}
+
+__END__
