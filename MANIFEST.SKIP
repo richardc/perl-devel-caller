@@ -1,5 +1,9 @@
 ~$
+^_build/
+^wuh$
+^Build$
 blib/
+.svn/
 \.tar\.gz$
 \bCVS\b
 Makefile
