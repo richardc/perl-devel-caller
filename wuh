@@ -8,14 +8,18 @@ use Data::Dumper;
 my $coy = rand 6;
 real( $coy, $coy );
 
-warn "huh?\n", real( $coy, $coy );
-warn "----";
-warn "confusing\n", print $/, real( $coy, $coy );
+my ($foo, @foo, %foo);
+real( $foo, @foo, %foo );
 
-print "$/ even more confusing $/", real( $coy, $coy );
+real( my $foo = $coy );
+warn "huh?\n", real( $coy, $coy );
+#warn "----";
+#warn "confusing\n", print $/, real( $coy, $coy );
+
+#print "$/ even more confusing $/", real( $coy, $coy );
 
 sub real {
-    my @called = called_with(0,1);
+    my @called = called_with(0);
     print Dumper( \@called );
     return 1;
 }

@@ -41,6 +41,50 @@ glob_out(char sigil, GVOP* op, I32 want_name)
     return sv_2mortal(newRV_inc(ret));
 }
 
+#define WORK_DAMN_YOU 0
+
+/* scan forward to the ENTERSUB and figure out which PUSHMARK is the
+ * one that precedes the arguments for that sub */
+
+static
+OP *
+scan_forward(OP *op) {
+    AV* markstack = newAV();
+    SV *sv;
+
+    if (op->op_type != OP_PUSHMARK) 
+	croak("was expecting a pushmark, not a '%s'",  OP_NAME(op));
+    
+    for (; op && op->op_type != OP_ENTERSUB; op = op->op_next) {
+#if WORK_DAMN_YOU
+        printf("SCAN op %x %s next %x sibling %x targ %d\n", 
+	       op, OP_NAME(op), op->op_next, op->op_sibling, op->op_targ);  
+
+#endif
+	switch (op->op_type) {
+	case OP_PUSHMARK: 
+#if WORK_DAMN_YOU
+	    printf("SCAN PUSH %x\n", op);
+#endif
+	    av_push( markstack, sv_2mortal(newSViv( (IV) op)) );
+	    break;
+	    /* ops that consume marks */
+#if WORK_DAMN_YOU
+	    printf("SCAN POP %x\n", op);
+#endif
+	    av_pop( markstack );
+
+	    break;
+	}
+    }
+#if WORK_DAMN_YOU
+	    printf("SCAN END\n");
+#endif
+    
+    sv = av_pop(markstack);
+    return (OP*) SvIV(sv);
+}
+
 
 MODULE = Devel::Caller                PACKAGE = Devel::Caller
 
@@ -61,12 +105,11 @@ I32 want_names;
 
   PPCODE:
 {
-    /* hacky hacky hacky.  under ithreads Gvs are stored in PL_curpad
+    /* hacky hacky hacky.  under ithreads GVs are stored in PL_curpad
      * which moves about some.  Here we temporarily pretend we were
      * back in olden times, which is where we're looking */
     oldpad = PL_curpad;
     PL_curpad = AvARRAY(padv);
-#define WORK_DAMN_YOU 1
 #if WORK_DAMN_YOU
     printf("cx %x %d cv %x pad %x %x\n", cx, cx->cx_type, cv, padn, padv);
 #endif
@@ -74,8 +117,10 @@ I32 want_names;
     /* (hackily) deparse the subroutine invocation */
 
     op = cx->blk_oldcop->op_next;
+    op = scan_forward( op );
     if (op->op_type != OP_PUSHMARK) 
 	croak("was expecting a pushmark, not a '%s'",  OP_NAME(op));
+
     while ((prev_op = op) && (op = op->op_next) && (op->op_type != OP_ENTERSUB)) {
 #if WORK_DAMN_YOU
         printf("op %x %s next %x sibling %x targ %d\n", 
@@ -83,8 +128,8 @@ I32 want_names;
 #endif
         switch (op->op_type) {
         case OP_PUSHMARK: 
-	    /* if it's a pushmark there's a sub-operation brewing, 
-	       like P( my @foo = @bar ); so ignore it for a while */
+	    /* if it's a pushmark there's a probably a sub-operation brewing, 
+	       like P( my @foo = @bar ); so turn off capturing for now. */
             skip_next = !skip_next;
 #if WORK_DAMN_YOU
 	    printf("PUSHMARK skip_next %d\n", skip_next);
@@ -95,7 +140,9 @@ I32 want_names;
         case OP_PADHV:
 #define VARIABLE_PREAMBLE \
             if (op->op_next->op_next->op_type == OP_SASSIGN) { \
+                /* so it's an assign coming up. cancel the skipping */ \
                 skip_next = 0; \
+                /* and ignore this value */ \
                 break; \
             } \
             if (skip_next) break; 
@@ -141,11 +188,18 @@ I32 want_names;
 	    break;
         case OP_CONST:
 #if WORK_DAMN_YOU
-	    printf("CONST skip_next %d\n", skip_next);
+	    printf("CONST skip_next %d op->op_\n", skip_next);
 #endif
 
             VARIABLE_PREAMBLE;
-            XPUSHs(&PL_sv_undef);
+
+            /* XXX are all const ops svs? it seems that way from
+	     * looking at Perl_fold_constant in op.c */
+            if (want_names)
+		XPUSHs(&PL_sv_undef);
+	    else
+		XPUSHs(cSVOPx_sv(op)); 
+
             break;
         }
     }

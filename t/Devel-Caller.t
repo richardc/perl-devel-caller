@@ -1,6 +1,6 @@
-#!perl
+#!perl -w
 use strict;
-use Test::More tests => 73;
+use Test::More tests => 72;
 
 BEGIN { use_ok( 'Devel::Caller', qw( caller_cv caller_args caller_vars called_with called_as_method ) ) }
 
