@@ -1,4 +1,4 @@
-/* C-Mode */
+/* -*- C -*- */
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
@@ -66,9 +66,9 @@ I32 want_names;
      * back in olden times, which is where we're looking */
     oldpad = PL_curpad;
     PL_curpad = AvARRAY(padv);
-#define WORK_DAMN_YOU 0
+#define WORK_DAMN_YOU 1
 #if WORK_DAMN_YOU
-    printf("cx %x cv %x pad %x %x\n", cx, cv, padn, padv);
+    printf("cx %x %d cv %x pad %x %x\n", cx, cx->cx_type, cv, padn, padv);
 #endif
     /* a lot of this blind derefs, hope it goes ok */
     /* (hackily) deparse the subroutine invocation */
@@ -78,13 +78,17 @@ I32 want_names;
 	croak("was expecting a pushmark, not a '%s'",  OP_NAME(op));
     while ((prev_op = op) && (op = op->op_next) && (op->op_type != OP_ENTERSUB)) {
 #if WORK_DAMN_YOU
-        printf("op %x %s next %x sibling %x targ %d\n", op, OP_NAME(op), op->op_next, op->op_sibling, op->op_targ);  
+        printf("op %x %s next %x sibling %x targ %d\n", 
+	       op, OP_NAME(op), op->op_next, op->op_sibling, op->op_targ);  
 #endif
         switch (op->op_type) {
         case OP_PUSHMARK: 
-                /* if it's a pushmark there's a sub-operation brewing, 
-                   like P( my @foo = @bar ); so ignore it for a while */
+	    /* if it's a pushmark there's a sub-operation brewing, 
+	       like P( my @foo = @bar ); so ignore it for a while */
             skip_next = !skip_next;
+#if WORK_DAMN_YOU
+	    printf("PUSHMARK skip_next %d\n", skip_next);
+#endif
             break;
         case OP_PADSV:
         case OP_PADAV:
@@ -103,7 +107,7 @@ I32 want_names;
             if (want_names) {
                 /* XXX this catches a bizarreness in the pad which
                    causes SvCUR to be incorrect for: 
-                     my (@foo, @bar); bar (@foo = @bar) */
+		   my (@foo, @bar); bar (@foo = @bar) */
                 SV* sv = *av_fetch(padn, op->op_targ, 0);
                 I32 len = SvCUR(sv) > SvLEN(sv) ? SvLEN(sv) - 1 : SvCUR(sv);
 #if WORK_DAMN_YOU
@@ -124,16 +128,17 @@ I32 want_names;
 	    printf("GV skip_next %d\n", skip_next);
 #endif
             VARIABLE_PREAMBLE;
-
-            if      (op->op_type == OP_GVSV) 
-                XPUSHs(glob_out('$', (GVOP*) op, want_names));
-            else if (op->op_type == OP_RV2AV) 
-                XPUSHs(glob_out('@', (GVOP*) prev_op, want_names));
-            else if (op->op_type == OP_RV2HV) 
-                XPUSHs(glob_out('%', (GVOP*) prev_op, want_names));
-            else if (op->op_type == OP_RV2GV) 
-                XPUSHs(glob_out('*', (GVOP*) prev_op, want_names));
-            break;
+	    switch (op->op_type) {
+	    case OP_GVSV:
+		XPUSHs(glob_out('$', (GVOP*) op, want_names)); break;
+	    case OP_RV2AV:
+		XPUSHs(glob_out('@', (GVOP*) prev_op, want_names)); break;
+	    case OP_RV2HV:
+		XPUSHs(glob_out('%', (GVOP*) prev_op, want_names)); break;
+	    case OP_RV2GV:
+                XPUSHs(glob_out('*', (GVOP*) prev_op, want_names)); break;
+	    }
+	    break;
         case OP_CONST:
 #if WORK_DAMN_YOU
 	    printf("CONST skip_next %d\n", skip_next);
@@ -143,7 +148,6 @@ I32 want_names;
             XPUSHs(&PL_sv_undef);
             break;
         }
-
     }
     PL_curpad = oldpad; /* see hacky hacky hacky note above */
 }
