@@ -9,7 +9,7 @@ require 5.005003;
 @ISA = qw(Exporter DynaLoader);
 @EXPORT_OK = qw( caller_cv called_with called_as_method );
 
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 bootstrap Devel::Caller $VERSION;
 
@@ -102,6 +102,15 @@ into a constant assignment at compile time as in newer perls.
 =head1 HISTORY
 
 =over
+
+=item 0.06 Released 2002-11-21
+
+Fix to called_as_method from Rafael Garcia-Suarez to handle
+$foo->$method() calls.
+
+=item 0.06 Released 2002-11-20
+
+Added called_as_method routine
 
 =item 0.05 Released 2002-07-25
 

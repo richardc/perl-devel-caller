@@ -169,7 +169,7 @@ PPCODE:
     if (op->op_type != OP_PUSHMARK) 
 	croak("was expecting a pushmark, not a '%s'",  OP_NAME(op));
     while ((prev_op = op) && (op = op->op_next) && (op->op_type != OP_ENTERSUB)) {
-	if (op->op_type == OP_METHOD_NAMED) {
+	if (op->op_type == OP_METHOD_NAMED || op->op_type == OP_METHOD) {
 	    XPUSHs(sv_2mortal(newSViv(1)));
 	    return;
 	}

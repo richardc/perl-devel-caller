@@ -1,6 +1,6 @@
 #!perl
 use strict;
-use Test::More tests => 68;
+use Test::More tests => 69;
 
 BEGIN { use_ok( 'Devel::Caller', qw( caller_cv called_with called_as_method ) ) }
 
@@ -174,4 +174,6 @@ sub maybe_method {
 maybe_method();
 $called = 1;
 main->maybe_method();
+my $name = 'maybe_method';
+main->$name();
 
