@@ -32,7 +32,6 @@ my (@foo, %foo);
 sub called_lex {
     my @called = called_with(0);
     is( scalar @called, 3, "right count");
-    local $TODO = "pad reorg broke this" if $] >= 5.008001;
     is( $called[0], \$foo, "with lexical \$foo" );
     is( $called[1], \@foo, "with lexical \@foo" );
     is( $called[2], \%foo, "with lexical \%foo" );
@@ -105,7 +104,6 @@ $what = 'lexical prexist';
     @expect = qw( %flange );        called_assign(%flange = (%foo, %bar));
 }
 
-
 use vars qw( $quux @quux %quux );
 sub called {
     my @called = caller_vars(0);
@@ -164,6 +162,7 @@ $what = 'package';
     @expect = qw( %T::quux %T::bar );  called_assign(%quux = %foo, %bar);
     @expect = qw( %T::flange );        called_assign(%flange = (%foo, %bar));
 }
+
 
 package main;
 # were we called as a method or a sub

@@ -1,9 +1,7 @@
 README
 MANIFEST
-META.yml
 Changes
-Build.PL
 Makefile.PL
 lib/Devel/Caller.pm
-lib/Devel/Caller.xs
+Caller.xs
 t/Devel-Caller.t
