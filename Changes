@@ -1,4 +1,4 @@
-HEAD
+2.02 Friday 28th December, 2007
 	Make use of INT2PTR macro for great justice! (or 64-bit stuff,
 	it's hard to tell)
 
