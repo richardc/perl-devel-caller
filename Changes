@@ -1,3 +1,7 @@
+HEAD
+	Make use of INT2PTR macro for great justice! (or 64-bit stuff,
+	it's hard to tell)
+
 2.01 Thursday 27th December, 2007
 	Translated the XS and C into perl using B.  Though the perl looks
 	much like C this gives a chance to make it more perlish in the future.

@@ -9,7 +9,7 @@ SV*
 _context_cv(context)
 SV* context;
   CODE:
-    PERL_CONTEXT *cx = (PERL_CONTEXT*) SvIV(context);
+    PERL_CONTEXT *cx = INT2PTR(PERL_CONTEXT *, SvIV(context));
     CV *cur_cv;
 
     if (cx->cx_type != CXt_SUB)
@@ -27,7 +27,7 @@ SV*
 _context_op(context)
 SV* context;
   CODE:
-    PERL_CONTEXT *cx = (PERL_CONTEXT*) SvIV(context);
+    PERL_CONTEXT *cx = INT2PTR(PERL_CONTEXT*, SvIV(context));
     OP *op = cx->blk_oldcop->op_next;
     SV *rv = newSV(0);
     sv_setref_iv(rv, "B::OP", PTR2IV(op));
