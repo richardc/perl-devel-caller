@@ -1,3 +1,7 @@
+2.03 Tuesday 8th January, 2008
+	Rerelease from a linux host to avoid hateful OSX and its
+	hateful resource forks http://rt.cpan.org/Ticket/Display.html?id=32154
+
 2.02 Friday 28th December, 2007
 	Make use of INT2PTR macro for great justice! (or 64-bit stuff,
 	it's hard to tell)
