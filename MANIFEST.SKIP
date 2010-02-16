@@ -17,3 +17,5 @@ Caller.c
 \.o$
 \.bs$
 ^notes/
+^\.git/
+^\.gitignore
