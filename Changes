@@ -1,3 +1,7 @@
+2.04 Tuesday 16th February, 2010
+	Use CxTYPE macro rather than directly inspecting cx->cx_type
+	http://rt.cpan.org/Public/Bug/Display.html?id=33005
+
 2.03 Tuesday 8th January, 2008
 	Rerelease from a linux host to avoid hateful OSX and its
 	hateful resource forks http://rt.cpan.org/Ticket/Display.html?id=32154

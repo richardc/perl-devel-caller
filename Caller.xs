@@ -12,8 +12,8 @@ SV* context;
     PERL_CONTEXT *cx = INT2PTR(PERL_CONTEXT *, SvIV(context));
     CV *cur_cv;
 
-    if (cx->cx_type != CXt_SUB)
-        croak("cx_type is %d not CXt_SUB\n", cx->cx_type);
+    if (CxTYPE(cx) != CXt_SUB)
+        croak("cx_type is %d not CXt_SUB\n", CxTYPE(cx));
 
     cur_cv = cx->blk_sub.cv;
     if (!cur_cv)
