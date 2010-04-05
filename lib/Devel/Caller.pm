@@ -92,14 +92,19 @@ sub called_with {
             }
 
             my $consider = ($op->name eq "gvsv") ? $op : $prev;
-            my $gv = $consider->gv;
-            print "consider: $consider ", $consider->name, " gv $gv\n"
-              if $DEBUG;
+            my $gv;
+
             if (ref $consider eq 'B::PADOP') {
                 print "GV is really a padgv\n" if $DEBUG;
                 $gv = $padv->ARRAYelt( $consider->padix );
                 print "NEW GV $gv\n" if $DEBUG;
             }
+            else {
+                $gv = $consider->gv;
+            }
+
+            print "consider: $consider ", $consider->name, " gv $gv\n"
+              if $DEBUG;
 
             if ($want_names) {
                 my %sigils = (
