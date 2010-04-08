@@ -1,3 +1,7 @@
+2.05 Thursday 8th April, 2010
+	Don't call B::PADOP->gv.  Work by by Florian Ragwitz
+	http://github.com/rafl/perl-devel-caller/commit/248a23390eef48a73bb717be085da58ce50ff784
+
 2.04 Tuesday 16th February, 2010
 	Use CxTYPE macro rather than directly inspecting cx->cx_type
 	http://rt.cpan.org/Public/Bug/Display.html?id=33005

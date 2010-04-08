@@ -7,7 +7,7 @@ use XSLoader;
 use base qw( Exporter  );
 use 5.008;
 
-our $VERSION = '2.04';
+our $VERSION = '2.05';
 XSLoader::load __PACKAGE__, $VERSION;
 
 our @EXPORT_OK = qw( caller_cv caller_args caller_vars called_with called_as_method );
