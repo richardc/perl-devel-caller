@@ -222,6 +222,7 @@ constants are returned as C<undef> in both cases
 C<called_as_method> returns true if the subroutine at $level was
 called as a method.
 
+=back
 
 =head1 BUGS
 
