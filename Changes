@@ -1,3 +1,7 @@
+2.06 Wednesday 16th January, 2013
+       Corrected some pod syntax RT#56456
+       Handle the new padrange op added in 5.17 RT#81704
+
 2.05 Thursday 8th April, 2010
 	Don't call B::PADOP->gv.  Work by by Florian Ragwitz
 	http://github.com/rafl/perl-devel-caller/commit/248a23390eef48a73bb717be085da58ce50ff784
