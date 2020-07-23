@@ -229,7 +229,7 @@ called as a method.
 All of these routines are susceptible to the same limitations as
 C<caller> as described in L<perlfunc/caller>
 
-The deparsing of the optree perfomed by called_with is fairly simple-minded
+The deparsing of the optree performed by called_with is fairly simple-minded
 and so a bit flaky.
 
 =over
