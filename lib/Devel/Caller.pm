@@ -7,7 +7,7 @@ use XSLoader;
 use base qw( Exporter  );
 use 5.008;
 
-our $VERSION = '2.06';
+our $VERSION = '2.07';
 XSLoader::load __PACKAGE__, $VERSION;
 
 our @EXPORT_OK = qw( caller_cv caller_args caller_vars called_with called_as_method );
@@ -274,7 +274,7 @@ PadWalker by Robin Houston
 
 =head1 COPYRIGHT
 
-Copyright (c) 2002, 2003, 2006, 2007, 2008, 2010, 2013 Richard Clamp.
+Copyright (c) 2002, 2003, 2006, 2007, 2008, 2010, 2013, 2023 Richard Clamp.
 All Rights Reserved.
 
 This module is free software. It may be used, redistributed and/or
